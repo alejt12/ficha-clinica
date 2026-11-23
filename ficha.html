@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Clínica — Cosmiatría</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="contenedor">
+        <header class="cabecera">
+            <h1>📋 Ficha Clínica Cosmiátrica</h1>
+            <p>Registro de valoración y seguimiento de tratamientos</p>
+        </header>
+
+        <form id="formularioFicha">
+            <section class="seccion">
+                <h2>👤 Datos del Paciente</h2>
+                <div class="grid-datos">
+                    <div>
+                        <label>Nombre completo:</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div>
+                        <label>Edad:</label>
+                        <input type="number" id="edad" min="10" max="110">
+                    </div>
+                    <div>
+                        <label>Teléfono:</label>
+                        <input type="tel" id="telefono">
+                    </div>
+                    <div>
+                        <label>Fecha de valoración:</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+                </div>
+            </section>
+
+            <section class="seccion">
+                <h2>📝 Antecedentes Relevantes</h2>
+                <label>Antecedentes alérgicos / Medicamentos:</label>
+                <textarea id="alergias" rows="3" placeholder="Ej: Alergia a látex, uso de medicamentos..."></textarea>
+
+                <label>Tratamientos estéticos anteriores:</label>
+                <textarea id="tratamientosPrevios" rows="2" placeholder="Ej: Limpiezas faciales, peeling, etc."></textarea>
+            </section>
+
+            <section class="seccion">
+                <h2>🔍 Valoración Cutánea</h2>
+                <div class="grid-datos">
+                    <div>
+                        <label>Tipo de piel:</label>
+                        <select id="tipoPiel">
+                            <option value="">Seleccionar</option>
+                            <option>Normal</option>
+                            <option>Seca</option>
+                            <option>Grasa</option>
+                            <option>Mixta</option>
+                            <option>Sensible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Fototipo:</label>
+                        <select id="fototipo">
+                            <option value="">Seleccionar</option>
+                            <option>I — Muy claro</option>
+                            <option>II — Claro</option>
+                            <option>III — Blanco</option>
+                            <option>IV — Mediterráneo</option>
+                            <option>V — Moreno</option>
+                            <option>VI — Muy oscuro</option>
+                        </select>
+                    </div>
+                </div>
+                <label>Observaciones cutáneas:</label>
+                <textarea id="observaciones" rows="3" placeholder="Manchas, arrugas, poros, deshidratación, sensibilidad..."></textarea>
+            </section>
+
+            <section class="seccion">
+                <h2>💆 Plan de Tratamiento</h2>
+                <div id="listaTratamientos"></div>
+                <button type="button" id="agregarTratamiento" class="btn-secundario">➕ Agregar tratamiento</button>
+
+                <label>Indicaciones y recomendaciones:</label>
+                <textarea id="recomendaciones" rows="3" placeholder="Cuidados en casa, productos, frecuencia..."></textarea>
+            </section>
+
+            <div class="botones-accion">
+                <button type="button" id="nuevaFicha" class="btn-secundario">🆕 Nueva ficha</button>
+                <button type="button" id="generarPDF" class="btn-principal">📄 Exportar a PDF</button>
+            </div>
+        </form>
+    </div>
+    <script src="codigo.js"></script>
+</body>
+</html>
