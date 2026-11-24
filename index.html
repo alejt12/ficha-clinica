@@ -91,7 +91,6 @@
         }
         .btn-principal { background: #a5b4c4; color: #fff; }
         .btn-secundario { background: #f0e6e6; color: #6b4f4f; }
-        .btn-whatsapp { background: #25D366; color: #fff; }
         .btn-eliminar {
             background: none;
             border: none;
@@ -187,7 +186,6 @@
             </section>
 
             <div class="botones-accion">
-                <button type="button" id="enviarWhatsApp" class="btn-whatsapp">📲 Enviar por WhatsApp</button>
                 <button type="button" id="generarPDF" class="btn-principal">🖨️ Guardar PDF</button>
                 <button type="button" id="nuevaFicha" class="btn-secundario">🆕 Ficha nueva</button>
             </div>
@@ -200,9 +198,7 @@
             const btnAgregar = document.getElementById('agregarTratamiento');
             const btnPDF = document.getElementById('generarPDF');
             const btnNueva = document.getElementById('nuevaFicha');
-            const btnWhatsApp = document.getElementById('enviarWhatsApp');
             const form = document.getElementById('formularioFicha');
-            const TELEFONO = '527296336318';
             let contadorTratamientos = 0;
 
             // Fecha de hoy
@@ -237,75 +233,6 @@
                 item.querySelector('.btn-eliminar').onclick = function() {
                     item.remove();
                 };
-            };
-
-            // Recolectar datos
-            function recolectarDatos() {
-                const nombre = document.getElementById('nombre').value || 'No especificado';
-                const edad = document.getElementById('edad').value || 'No especificada';
-                const telefono = document.getElementById('telefono').value || 'No especificado';
-                const fecha = document.getElementById('fecha').value || 'No especificada';
-                const alergias = document.getElementById('alergias').value || 'Ninguna';
-                const tratamientosPrevios = document.getElementById('tratamientosPrevios').value || 'Ninguno';
-                const tipoPiel = document.getElementById('tipoPiel').value || 'No especificado';
-                const fototipo = document.getElementById('fototipo').value || 'No especificado';
-                const observaciones = document.getElementById('observaciones').value || 'Ninguna';
-                const recomendaciones = document.getElementById('recomendaciones').value || 'Ninguna';
-
-                const tratamientos = document.querySelectorAll('.tratamiento-item');
-                let textoTratamientos = '';
-                if (tratamientos.length > 0) {
-                    textoTratamientos = '\n--- TRATAMIENTOS ---';
-                    tratamientos.forEach((t, i) => {
-                        const nom = t.querySelector('.t-nombre').value || 'Sin nombre';
-                        const fec = t.querySelector('.t-fecha').value || 'Sin fecha';
-                        const not = t.querySelector('.t-nota').value || 'Sin nota';
-                        textoTratamientos += '\n' + (i+1) + '. ' + nom + ' | Fecha: ' + fec + ' | Nota: ' + not;
-                    });
-                } else {
-                    textoTratamientos = '\n--- TRATAMIENTOS ---\nNinguno registrado';
-                }
-
-                return `
-📋 FICHA CLÍNICA — COSMIATRÍA
-
-👤 DATOS DEL PACIENTE
-─────────────────────
-Nombre: ${nombre}
-Edad: ${edad} años
-Teléfono: ${telefono}
-Fecha: ${fecha}
-
-📝 ANTECEDENTES
-─────────────────────
-Alergias/Medicamentos: ${alergias}
-Tratamientos anteriores: ${tratamientosPrevios}
-
-🔍 VALORACIÓN CUTÁNEA
-─────────────────────
-Tipo de piel: ${tipoPiel}
-Fototipo: ${fototipo}
-Observaciones: ${observaciones}
-
-💆 PLAN DE TRATAMIENTO
-─────────────────────${textoTratamientos}
-
-📌 RECOMENDACIONES
-─────────────────────
-${recomendaciones}
-                `.trim();
-            }
-
-            // WhatsApp
-            btnWhatsApp.onclick = function() {
-                const nombre = document.getElementById('nombre').value;
-                if (!nombre) {
-                    alert('Escribe el nombre del paciente primero');
-                    return;
-                }
-                const mensaje = encodeURIComponent(recolectarDatos());
-                const url = 'https://wa.me/' + TELEFONO + '?text=' + mensaje;
-                window.open(url, '_blank');
             };
 
             // PDF
