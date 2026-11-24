@@ -4,8 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha Clínica — Cosmiatría</title>
-    <link rel="stylesheet" href="estilos.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f8e9eb, #e6f2f5);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .contenedor {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .cabecera {
+            background: linear-gradient(135deg, #d4a5a5, #a5b4c4);
+            color: #2c2c2c;
+            padding: 25px;
+            text-align: center;
+        }
+        .cabecera h1 { font-size: 1.6rem; margin-bottom: 5px; }
+        .seccion {
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+        }
+        .seccion h2 {
+            font-size: 1.1rem;
+            color: #8b5f5f;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #f0d0d0;
+        }
+        label {
+            display: block;
+            margin: 12px 0 5px;
+            font-weight: 500;
+            color: #444;
+            font-size: 0.95rem;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: #fefefe;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #d4a5a5;
+            box-shadow: 0 0 0 3px rgba(212,165,165,0.2);
+        }
+        .grid-datos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px 20px;
+        }
+        .tratamiento-item {
+            background: #f9f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 3px solid #d4a5a5;
+        }
+        .botones-accion {
+            padding: 25px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .btn-principal { background: #a5b4c4; color: #fff; }
+        .btn-secundario { background: #f0e6e6; color: #6b4f4f; }
+        .btn-whatsapp { background: #25D366; color: #fff; }
+        .btn-eliminar {
+            background: none;
+            border: none;
+            color: #c75555;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        @media print {
+            .botones-accion, #agregarTratamiento, .btn-eliminar { display: none !important; }
+            body { background: #fff; }
+            .contenedor { box-shadow: none; max-width: 100%; }
+        }
+    </style>
 </head>
 <body>
     <div class="contenedor">
@@ -39,11 +139,11 @@
 
             <section class="seccion">
                 <h2>📝 Antecedentes Relevantes</h2>
-                <label>Antecedentes alérgicos / Medicamentos:</label>
-                <textarea id="alergias" rows="3" placeholder="Ej: Alergia a látex, uso de medicamentos..."></textarea>
+                <label>Alergias y/o medicamentos actuales:</label>
+                <textarea id="alergias" rows="3" placeholder="Escribe aquí..."></textarea>
 
                 <label>Tratamientos estéticos anteriores:</label>
-                <textarea id="tratamientosPrevios" rows="2" placeholder="Ej: Limpiezas faciales, peeling, etc."></textarea>
+                <textarea id="tratamientosPrevios" rows="2" placeholder="Escribe aquí..."></textarea>
             </section>
 
             <section class="seccion">
@@ -52,7 +152,7 @@
                     <div>
                         <label>Tipo de piel:</label>
                         <select id="tipoPiel">
-                            <option value="">Seleccionar</option>
+                            <option value="">Selecciona una opción</option>
                             <option>Normal</option>
                             <option>Seca</option>
                             <option>Grasa</option>
@@ -63,18 +163,18 @@
                     <div>
                         <label>Fototipo:</label>
                         <select id="fototipo">
-                            <option value="">Seleccionar</option>
+                            <option value="">Selecciona una opción</option>
                             <option>I — Muy claro</option>
                             <option>II — Claro</option>
-                            <option>III — Blanco</option>
-                            <option>IV — Mediterráneo</option>
+                            <option>III — Medio</option>
+                            <option>IV — Moreno claro</option>
                             <option>V — Moreno</option>
                             <option>VI — Muy oscuro</option>
                         </select>
                     </div>
                 </div>
-                <label>Observaciones cutáneas:</label>
-                <textarea id="observaciones" rows="3" placeholder="Manchas, arrugas, poros, deshidratación, sensibilidad..."></textarea>
+                <label>Observaciones de la piel:</label>
+                <textarea id="observaciones" rows="3" placeholder="Manchas, arrugas, poros..."></textarea>
             </section>
 
             <section class="seccion">
@@ -82,16 +182,149 @@
                 <div id="listaTratamientos"></div>
                 <button type="button" id="agregarTratamiento" class="btn-secundario">➕ Agregar tratamiento</button>
 
-                <label>Indicaciones y recomendaciones:</label>
-                <textarea id="recomendaciones" rows="3" placeholder="Cuidados en casa, productos, frecuencia..."></textarea>
+                <label>Recomendaciones y cuidados:</label>
+                <textarea id="recomendaciones" rows="3" placeholder="Productos, rutina, próximas citas..."></textarea>
             </section>
 
             <div class="botones-accion">
-                <button type="button" id="nuevaFicha" class="btn-secundario">🆕 Nueva ficha</button>
-                <button type="button" id="generarPDF" class="btn-principal">📄 Exportar a PDF</button>
+                <button type="button" id="enviarWhatsApp" class="btn-whatsapp">📲 Enviar por WhatsApp</button>
+                <button type="button" id="generarPDF" class="btn-principal">🖨️ Guardar PDF</button>
+                <button type="button" id="nuevaFicha" class="btn-secundario">🆕 Ficha nueva</button>
             </div>
         </form>
     </div>
-    <script src="codigo.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const listaTratamientos = document.getElementById('listaTratamientos');
+            const btnAgregar = document.getElementById('agregarTratamiento');
+            const btnPDF = document.getElementById('generarPDF');
+            const btnNueva = document.getElementById('nuevaFicha');
+            const btnWhatsApp = document.getElementById('enviarWhatsApp');
+            const form = document.getElementById('formularioFicha');
+            const TELEFONO = '527296336318';
+            let contadorTratamientos = 0;
+
+            // Fecha de hoy
+            document.getElementById('fecha').valueAsDate = new Date();
+
+            // Agregar tratamiento
+            btnAgregar.onclick = function() {
+                contadorTratamientos++;
+                const item = document.createElement('div');
+                item.className = 'tratamiento-item';
+                item.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>Tratamiento ${contadorTratamientos}</strong>
+                        <button type="button" class="btn-eliminar">✕</button>
+                    </div>
+                    <div class="grid-datos" style="margin-top:8px;">
+                        <div>
+                            <label>Nombre:</label>
+                            <input type="text" class="t-nombre" placeholder="Nombre del tratamiento">
+                        </div>
+                        <div>
+                            <label>Fecha:</label>
+                            <input type="date" class="t-fecha">
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label>Observaciones:</label>
+                            <input type="text" class="t-nota" placeholder="Notas breves">
+                        </div>
+                    </div>
+                `;
+                listaTratamientos.appendChild(item);
+                item.querySelector('.btn-eliminar').onclick = function() {
+                    item.remove();
+                };
+            };
+
+            // Recolectar datos
+            function recolectarDatos() {
+                const nombre = document.getElementById('nombre').value || 'No especificado';
+                const edad = document.getElementById('edad').value || 'No especificada';
+                const telefono = document.getElementById('telefono').value || 'No especificado';
+                const fecha = document.getElementById('fecha').value || 'No especificada';
+                const alergias = document.getElementById('alergias').value || 'Ninguna';
+                const tratamientosPrevios = document.getElementById('tratamientosPrevios').value || 'Ninguno';
+                const tipoPiel = document.getElementById('tipoPiel').value || 'No especificado';
+                const fototipo = document.getElementById('fototipo').value || 'No especificado';
+                const observaciones = document.getElementById('observaciones').value || 'Ninguna';
+                const recomendaciones = document.getElementById('recomendaciones').value || 'Ninguna';
+
+                const tratamientos = document.querySelectorAll('.tratamiento-item');
+                let textoTratamientos = '';
+                if (tratamientos.length > 0) {
+                    textoTratamientos = '\n--- TRATAMIENTOS ---';
+                    tratamientos.forEach((t, i) => {
+                        const nom = t.querySelector('.t-nombre').value || 'Sin nombre';
+                        const fec = t.querySelector('.t-fecha').value || 'Sin fecha';
+                        const not = t.querySelector('.t-nota').value || 'Sin nota';
+                        textoTratamientos += '\n' + (i+1) + '. ' + nom + ' | Fecha: ' + fec + ' | Nota: ' + not;
+                    });
+                } else {
+                    textoTratamientos = '\n--- TRATAMIENTOS ---\nNinguno registrado';
+                }
+
+                return `
+📋 FICHA CLÍNICA — COSMIATRÍA
+
+👤 DATOS DEL PACIENTE
+─────────────────────
+Nombre: ${nombre}
+Edad: ${edad} años
+Teléfono: ${telefono}
+Fecha: ${fecha}
+
+📝 ANTECEDENTES
+─────────────────────
+Alergias/Medicamentos: ${alergias}
+Tratamientos anteriores: ${tratamientosPrevios}
+
+🔍 VALORACIÓN CUTÁNEA
+─────────────────────
+Tipo de piel: ${tipoPiel}
+Fototipo: ${fototipo}
+Observaciones: ${observaciones}
+
+💆 PLAN DE TRATAMIENTO
+─────────────────────${textoTratamientos}
+
+📌 RECOMENDACIONES
+─────────────────────
+${recomendaciones}
+                `.trim();
+            }
+
+            // WhatsApp
+            btnWhatsApp.onclick = function() {
+                const nombre = document.getElementById('nombre').value;
+                if (!nombre) {
+                    alert('Escribe el nombre del paciente primero');
+                    return;
+                }
+                const mensaje = encodeURIComponent(recolectarDatos());
+                const url = 'https://wa.me/' + TELEFONO + '?text=' + mensaje;
+                window.open(url, '_blank');
+            };
+
+            // PDF
+            btnPDF.onclick = function() {
+                const nombre = document.getElementById('nombre').value || 'Ficha';
+                document.title = 'Ficha_' + nombre.replace(/\s+/g, '_');
+                window.print();
+            };
+
+            // Nueva ficha
+            btnNueva.onclick = function() {
+                if (confirm('¿Limpiar todo para una ficha nueva?')) {
+                    form.reset();
+                    listaTratamientos.innerHTML = '';
+                    contadorTratamientos = 0;
+                    document.getElementById('fecha').valueAsDate = new Date();
+                }
+            };
+        });
+    </script>
 </body>
 </html>
