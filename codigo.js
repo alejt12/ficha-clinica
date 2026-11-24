@@ -1,150 +1,98 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const listaTratamientos = document.getElementById('listaTratamientos');
-    const btnAgregar = document.getElementById('agregarTratamiento');
-    const btnPDF = document.getElementById('generarPDF');
-    const btnNueva = document.getElementById('nuevaFicha');
-    const btnWhatsApp = document.getElementById('enviarWhatsApp');
-    const form = document.getElementById('formularioFicha');
-    const TELEFONO = '527296336318';
-    let contadorTratamientos = 0;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha Clínica — Cosmiatría</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="contenedor">
+        <header class="cabecera">
+            <h1>📋 Ficha Clínica Cosmiátrica</h1>
+            <p>Registro de valoración y seguimiento de tratamientos</p>
+        </header>
 
-    btnAgregar.addEventListener('click', () => {
-        contadorTratamientos++;
-        const item = document.createElement('div');
-        item.className = 'tratamiento-item';
-        item.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong>Tratamiento ${contadorTratamientos}</strong>
-                <button type="button" class="btn-eliminar" style="background:none; border:none; color:#c77; font-size:1.1rem; cursor:pointer;">✕</button>
+        <form id="formularioFicha">
+            <section class="seccion">
+                <h2>👤 Datos del Paciente</h2>
+                <div class="grid-datos">
+                    <div>
+                        <label>Nombre completo:</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div>
+                        <label>Edad:</label>
+                        <input type="number" id="edad" min="10" max="110">
+                    </div>
+                    <div>
+                        <label>Teléfono:</label>
+                        <input type="tel" id="telefono">
+                    </div>
+                    <div>
+                        <label>Fecha de valoración:</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+                </div>
+            </section>
+
+            <section class="seccion">
+                <h2>📝 Antecedentes Relevantes</h2>
+                <label>Alergias y/o medicamentos actuales:</label>
+                <textarea id="alergias" rows="3" placeholder="Escribe aquí si el paciente tiene alguna alergia o toma medicamentos..."></textarea>
+
+                <label>Tratamientos estéticos anteriores:</label>
+                <textarea id="tratamientosPrevios" rows="2" placeholder="Escribe aquí si ha recibido tratamientos estéticos antes..."></textarea>
+            </section>
+
+            <section class="seccion">
+                <h2>🔍 Valoración Cutánea</h2>
+                <div class="grid-datos">
+                    <div>
+                        <label>Tipo de piel:</label>
+                        <select id="tipoPiel">
+                            <option value="">Selecciona una opción</option>
+                            <option>Normal</option>
+                            <option>Seca</option>
+                            <option>Grasa</option>
+                            <option>Mixta</option>
+                            <option>Sensible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Fototipo:</label>
+                        <select id="fototipo">
+                            <option value="">Selecciona una opción</option>
+                            <option>I — Muy claro</option>
+                            <option>II — Claro</option>
+                            <option>III — Medio</option>
+                            <option>IV — Moreno claro</option>
+                            <option>V — Moreno</option>
+                            <option>VI — Muy oscuro</option>
+                        </select>
+                    </div>
+                </div>
+                <label>Observaciones de la piel:</label>
+                <textarea id="observaciones" rows="3" placeholder="Manchas, arrugas, poros, sensibilidad, etc..."></textarea>
+            </section>
+
+            <section class="seccion">
+                <h2>💆 Plan de Tratamiento</h2>
+                <div id="listaTratamientos"></div>
+                <button type="button" id="agregarTratamiento" class="btn-secundario">➕ Agregar tratamiento</button>
+
+                <label>Recomendaciones y cuidados:</label>
+                <textarea id="recomendaciones" rows="3" placeholder="Productos de uso diario, rutina en casa, próximas citas..."></textarea>
+            </section>
+
+            <div class="botones-accion">
+                <button type="button" id="enviarWhatsApp" class="btn-whatsapp">📲 Enviar por WhatsApp</button>
+                <button type="button" id="generarPDF" class="btn-principal">🖨️ Guardar / Imprimir PDF</button>
+                <button type="button" id="nuevaFicha" class="btn-secundario">🆕 Ficha nueva</button>
             </div>
-            <div class="grid-datos" style="margin-top:8px;">
-                <div>
-                    <label>Nombre:</label>
-                    <input type="text" class="t-nombre" placeholder="Ej: Hidratación profunda">
-                </div>
-                <div>
-                    <label>Fecha:</label>
-                    <input type="date" class="t-fecha">
-                </div>
-                <div>
-                    <label>Observaciones/Resultado:</label>
-                    <input type="text" class="t-nota" placeholder="Nota de evolución">
-                </div>
-            </div>
-        `;
-        listaTratamientos.appendChild(item);
-        item.querySelector('.btn-eliminar').addEventListener('click', () => item.remove());
-    });
+        </form>
+    </div>
 
-    function recolectarDatos() {
-        const nombre = document.getElementById('nombre').value || 'No especificado';
-        const edad = document.getElementById('edad').value || 'No especificada';
-        const telefono = document.getElementById('telefono').value || 'No especificado';
-        const fecha = document.getElementById('fecha').value || 'No especificada';
-        const alergias = document.getElementById('alergias').value || 'Ninguna';
-        const tratamientosPrevios = document.getElementById('tratamientosPrevios').value || 'Ninguno';
-        const tipoPiel = document.getElementById('tipoPiel').value || 'No especificado';
-        const fototipo = document.getElementById('fototipo').value || 'No especificado';
-        const observaciones = document.getElementById('observaciones').value || 'Ninguna';
-        const recomendaciones = document.getElementById('recomendaciones').value || 'Ninguna';
-
-        const tratamientos = document.querySelectorAll('.tratamiento-item');
-        let textoTratamientos = '';
-        if (tratamientos.length > 0) {
-            textoTratamientos = '\n--- TRATAMIENTOS ---';
-            tratamientos.forEach((t, i) => {
-                const nom = t.querySelector('.t-nombre').value || 'Sin nombre';
-                const fec = t.querySelector('.t-fecha').value || 'Sin fecha';
-                const not = t.querySelector('.t-nota').value || 'Sin nota';
-                textoTratamientos += `\n${i+1}. ${nom} | Fecha: ${fec} | Nota: ${not}`;
-            });
-        } else {
-            textoTratamientos = '\n--- TRATAMIENTOS ---\nNinguno registrado';
-        }
-
-        return `
-📋 *FICHA CLÍNICA — COSMIATRÍA*
-
-👤 *DATOS DEL PACIENTE*
-─────────────────────
-Nombre: ${nombre}
-Edad: ${edad} años
-Teléfono: ${telefono}
-Fecha: ${fecha}
-
-📝 *ANTECEDENTES*
-─────────────────────
-Alergias/Medicamentos: ${alergias}
-Tratamientos anteriores: ${tratamientosPrevios}
-
-🔍 *VALORACIÓN CUTÁNEA*
-─────────────────────
-Tipo de piel: ${tipoPiel}
-Fototipo: ${fototipo}
-Observaciones: ${observaciones}
-
-💆 *PLAN DE TRATAMIENTO*
-─────────────────────${textoTratamientos}
-
-📌 *RECOMENDACIONES*
-─────────────────────
-${recomendaciones}
-        `.trim();
-    }
-
-    btnWhatsApp.addEventListener('click', () => {
-        const nombre = document.getElementById('nombre').value;
-        if (!nombre) {
-            alert('Por favor escribe el nombre del paciente antes de enviar');
-            return;
-        }
-        const mensaje = encodeURIComponent(recolectarDatos());
-        const url = `https://wa.me/${TELEFONO}?text=${mensaje}`;
-        window.open(url, '_blank');
-    });
-
-    // ✅ FUNCIÓN DE PDF CORREGIDA
-    btnPDF.addEventListener('click', async () => {
-        const elemento = document.querySelector('.contenedor');
-        const nombrePaciente = document.getElementById('nombre').value || 'Paciente';
-        
-        const opciones = {
-            margin: 10,
-            filename: `Ficha_Cosmiatria_${nombrePaciente}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true,
-                letterRendering: true
-            },
-            jsPDF: { 
-                unit: 'mm', 
-                format: 'a4', 
-                orientation: 'portrait',
-                compress: true
-            },
-            pagebreak: { mode: 'avoid-all' }
-        };
-
-        try {
-            await html2pdf()
-                .from(elemento)
-                .set(opciones)
-                .save();
-        } catch (error) {
-            console.error('Error al generar PDF:', error);
-            alert('Hubo un problema al generar el PDF. Inténtalo de nuevo.');
-        }
-    });
-
-    btnNueva.addEventListener('click', () => {
-        if (confirm('¿Limpiar todo para una ficha nueva?')) {
-            form.reset();
-            listaTratamientos.innerHTML = '';
-            contadorTratamientos = 0;
-            document.getElementById('fecha').valueAsDate = new Date();
-        }
-    });
-
-    document.getElementById('fecha').valueAsDate = new Date();
-});
+    <script src="script.js"></script>
+</body>
+</html>
